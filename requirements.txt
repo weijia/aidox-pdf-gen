@@ -3,3 +3,4 @@ pdfkit
 cherrypy
 paste
 werkzeug
+flask-cors

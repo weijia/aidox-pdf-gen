@@ -1,4 +1,5 @@
 from flask import Flask, Response, request
+from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from paste.translogger import TransLogger
 import pdfkit
@@ -6,16 +7,21 @@ import pdfkit
 import cherrypy
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 tmpfolder = "/tmp/"
 
 @app.route("/pdf", methods=['POST'])
+@cross_origin()
 def pdf():
     config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
     doc = handle_request(config)
-    return Response(doc, mimetype='application/pdf')
+    response = Response(doc, mimetype='application/pdf')
+    return response
 
 @app.route("/jpg", methods=['POST'])
+@cross_origin()
 def jpg():
     config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltoimage')
     doc = handle_request(config)
