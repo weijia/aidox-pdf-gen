@@ -1,5 +1,5 @@
 from flask import Flask, Response, request
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 from paste.translogger import TransLogger
 import pdfkit
 
@@ -34,6 +34,8 @@ def handle_request(config):
     for key, value in request.form.items():
         if key[:len(listname)] == listname:
             options[key[len(listname)+1:-1]] = value
+    
+    print(request)
 
     if ('url' in request.form):
         print("URL provided: " + request.form['url'])
@@ -41,7 +43,7 @@ def handle_request(config):
 
     if ('html' in request.form):
         print("Html provided")
-        pdf = pdfkit.from_string(unicode(request.form['html']), output_path=False, configuration=config, options=options)
+        pdf = pdfkit.from_string(str(request.form['html']), output_path=False, configuration=config, options=options)
 
     # If we are receiving the html contents from a uploaded file
     elif ('content' in request.files):
@@ -50,6 +52,9 @@ def handle_request(config):
         f.save(tmpfolder + secure_filename(f.filename))
 
         pdf = pdfkit.from_file(tmpfolder + secure_filename(f.filename), output_path=False, configuration=config, options=options)
+    
+    else:
+        print("Could not find request")
 
     return pdf
 

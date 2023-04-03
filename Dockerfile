@@ -1,6 +1,4 @@
-FROM debian:jessie
-
-MAINTAINER Genar Trias <genar@cirici.com>
+FROM debian:bullseye
 
 RUN apt-get clean && \
     apt-get update && \
@@ -8,13 +6,14 @@ RUN apt-get clean && \
     apt-get install -y \
     gdebi \
     wget \
-    python-pip
+    python3 \
+    python3-pip
 
 WORKDIR /tmp
 
-RUN wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-jessie-amd64.deb && \
-    gdebi --n wkhtmltox-0.12.2.1_linux-jessie-amd64.deb && \
-    rm wkhtmltox-0.12.2.1_linux-jessie-amd64.deb
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+    gdebi --n wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+    rm wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
 
 RUN ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 RUN ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage
@@ -22,10 +21,10 @@ RUN ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage
 WORKDIR /
 
 COPY app.py /app.py
-COPY requeriments.txt /requeriments.txt
+COPY requirements.txt /requirements.txt
 
-RUN pip install -r requeriments.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 80
 
-CMD ["python","app.py"]
+CMD ["python3","app.py"]
